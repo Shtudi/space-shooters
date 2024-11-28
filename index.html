@@ -3,63 +3,75 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Guy Shtuden's Space Shooters Game</title>
+  <title>Space Shooters</title>
   <style>
     body {
-      background-color: black;
-      color: white;
       text-align: center;
       font-family: Arial, sans-serif;
+      background-color: black;
+      color: white;
     }
-
-    #gameCanvas {
-      border: 1px solid white;
+    canvas {
       display: block;
       margin: 20px auto;
-      background-color: black;
+      border: 2px solid white;
     }
-
-    .leaderboard {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      background-color: pink;
-      padding: 10px;
-      border-radius: 5px;
-      color: black;
+    button {
+      margin: 5px;
+      padding: 10px 20px;
+      font-size: 16px;
+    }
+    #score, #timer, #level {
       font-weight: bold;
+      color: green;
     }
-
-    .controls {
-      margin: 20px 0;
+    #leaderboard {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background-color: black;
+      border: 2px solid pink;
+      color: pink;
+      padding: 10px;
+      font-size: 14px;
+      text-align: left;
     }
-
-    .nickname-input {
+    #leaderboard h3 {
       margin-bottom: 10px;
+      font-size: 16px;
+      color: pink;
+    }
+    #leaderboard ol {
+      padding: 0;
+      margin: 0;
+      list-style-type: none;
+    }
+    #leaderboard li {
+      margin: 5px 0;
     }
   </style>
 </head>
 <body>
-  <h1>Guy Shtuden's Space Shooters Game</h1>
-  <div class="leaderboard">
-    <h3>Leaderboard</h3>
-    <ul id="leaderboardList">No scores yet</ul>
+  <h1 style="color: blue;">Space Shooters</h1>
+  <button id="spaceship1">Red Fighter</button>
+  <button id="spaceship2">Blue Defender</button>
+  <button id="spaceship3">Green Speedster</button>
+  <div>
+    <span>Score: <span id="score">0</span></span>
+    <span> | Time: <span id="timer">30</span></span>
+    <span> | Level: <span id="level">1</span></span>
   </div>
-  <div class="nickname-input">
-    <label for="playerName">Enter your nickname:</label>
-    <input type="text" id="playerName" placeholder="Nickname">
-  </div>
-  <div class="controls">
-    <button id="spaceship1">Red Fighter</button>
-    <button id="spaceship2">Blue Defender</button>
-    <button id="spaceship3">Green Speedster</button>
-  </div>
-  <p>Score: <span id="score">0</span> | Time: <span id="timer">30</span> | Level: <span id="level">1</span></p>
-  <div class="controls">
-    <button id="startButton">Start</button>
-    <button id="pauseButton">Pause</button>
-  </div>
+  <button id="startButton">Start</button>
+  <button id="pauseButton">Pause</button>
   <canvas id="gameCanvas" width="800" height="600"></canvas>
+
+  <div id="leaderboard">
+    <h3>Leaderboard</h3>
+    <ol id="leaderboardList">
+      <li>No scores yet</li>
+    </ol>
+  </div>
+
   <script src="game.js"></script>
 </body>
 </html>

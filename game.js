@@ -10,9 +10,6 @@ let bullets = [];
 let score = 0;
 let timeLeft = 60;
 
-// Debugging: Check if canvas is set up correctly
-console.log("Canvas initialized:", canvas, ctx);
-
 // Event Listener for Mouse Movement
 canvas.addEventListener('mousemove', (e) => {
   const rect = canvas.getBoundingClientRect();
@@ -41,9 +38,9 @@ function gameLoop() {
   }
 }
 
-// Draw Spaceship (Cool Triangle Shape)
+// Draw Spaceship (Cool Design)
 function drawSpaceship() {
-  ctx.fillStyle = 'red'; // Spaceship is red
+  ctx.fillStyle = 'red';
   ctx.beginPath();
   ctx.moveTo(spaceship.x, spaceship.y); // Top point of the triangle
   ctx.lineTo(spaceship.x - spaceship.width / 2, spaceship.y + spaceship.height); // Bottom-left
@@ -54,40 +51,40 @@ function drawSpaceship() {
 
 // Draw Bullets
 function drawBullets() {
-  ctx.fillStyle = 'white'; // Bullets are white
+  ctx.fillStyle = 'white';
   bullets.forEach((bullet, index) => {
     bullet.y -= 5;
     ctx.fillRect(bullet.x, bullet.y, 4, 10);
 
     if (bullet.y < 0) {
-      bullets.splice(index, 1);
+      bullets.splice(index, 1); // Remove bullets out of bounds
     }
   });
 }
 
 // Draw Asteroids
 function drawAsteroids() {
-  ctx.fillStyle = 'yellow'; // Asteroids are yellow
+  ctx.fillStyle = 'yellow';
   if (Math.random() < 0.02) {
     const newAsteroid = { x: Math.random() * canvas.width, y: 0, size: 30 };
     asteroids.push(newAsteroid);
   }
 
   asteroids.forEach((asteroid, index) => {
-    asteroid.y += 2;
+    asteroid.y += 2; // Move the asteroid downward
     ctx.beginPath();
     ctx.arc(asteroid.x, asteroid.y, asteroid.size / 2, 0, Math.PI * 2);
     ctx.fill();
 
     if (asteroid.y > canvas.height) {
-      asteroids.splice(index, 1);
+      asteroids.splice(index, 1); // Remove asteroids out of bounds
     }
   });
 }
 
 // Handle Collisions
 function handleCollisions() {
-  // Check collisions between bullets and asteroids
+  // Collision between bullets and asteroids
   bullets.forEach((bullet, bulletIndex) => {
     asteroids.forEach((asteroid, asteroidIndex) => {
       if (
@@ -96,8 +93,8 @@ function handleCollisions() {
         bullet.y < asteroid.y + asteroid.size / 2 &&
         bullet.y > asteroid.y - asteroid.size / 2
       ) {
-        // Collision detected
-        score += 1; // +1 point per asteroid
+        // Bullet hits asteroid
+        score += 1;
         document.getElementById('score').innerText = score;
         bullets.splice(bulletIndex, 1);
         asteroids.splice(asteroidIndex, 1);
@@ -105,19 +102,19 @@ function handleCollisions() {
     });
   });
 
-  // Check collisions between spaceship and asteroids
+  // Collision between spaceship and asteroids
   asteroids.forEach((asteroid, index) => {
     if (
-      spaceship.x < asteroid.x + asteroid.size / 2 &&
-      spaceship.x + spaceship.width > asteroid.x - asteroid.size / 2 &&
+      spaceship.x + spaceship.width / 2 > asteroid.x - asteroid.size / 2 &&
+      spaceship.x - spaceship.width / 2 < asteroid.x + asteroid.size / 2 &&
       spaceship.y < asteroid.y + asteroid.size / 2 &&
       spaceship.y + spaceship.height > asteroid.y - asteroid.size / 2
     ) {
-      // Collision with spaceship
-      score -= 5; // -5 points per collision
+      // Asteroid hits spaceship
+      score -= 5;
       document.getElementById('score').innerText = score;
-      console.log("Strike! -5 points.");
-      asteroids.splice(index, 1); // Remove asteroid after collision
+      console.log("Asteroid hit spaceship! -5 points");
+      asteroids.splice(index, 1);
     }
   });
 }
@@ -125,7 +122,7 @@ function handleCollisions() {
 // Update Timer
 function updateTimer() {
   if (timeLeft > 0) {
-    timeLeft -= 1 / 60; // Decrease by 1 frame
+    timeLeft -= 1 / 60;
     document.getElementById('timer').innerText = Math.floor(timeLeft);
   }
 }

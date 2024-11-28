@@ -14,6 +14,7 @@ let shieldActive = false;
 let paused = false;
 let gameStarted = false;
 let backgroundY = 0;
+let twoStreams = false;
 
 // Spaceship Selection
 document.getElementById('spaceship1').addEventListener('click', () => {
@@ -49,7 +50,14 @@ canvas.addEventListener('mousemove', (e) => {
 
 // Event Listener for Shooting
 canvas.addEventListener('click', () => {
+  // Main bullet
   bullets.push({ x: spaceship.x + spaceship.width / 2 - 2, y: spaceship.y });
+
+  // Second stream of bullets if twoStreams is active
+  if (twoStreams) {
+    bullets.push({ x: spaceship.x + spaceship.width / 2 - 20, y: spaceship.y });
+    bullets.push({ x: spaceship.x + spaceship.width / 2 + 20, y: spaceship.y });
+  }
 });
 
 // Game Loop
@@ -148,25 +156,20 @@ function handleCollisions() {
       ) {
         score += 1;
         document.getElementById('score').innerText = score;
+
+        // Trigger two streams of bullets after 3 hits
+        if (score === 3) twoStreams = true;
+
         bullets.splice(bulletIndex, 1);
+
+        // Split asteroid into smaller pieces
+        if (asteroid.size > 20) {
+          asteroids.push({ x: asteroid.x - 10, y: asteroid.y, size: asteroid.size / 2 });
+          asteroids.push({ x: asteroid.x + 10, y: asteroid.y, size: asteroid.size / 2 });
+        }
         asteroids.splice(asteroidIndex, 1);
       }
     });
-  });
-
-  asteroids.forEach((asteroid, index) => {
-    if (
-      spaceship.x + spaceship.width / 2 > asteroid.x - asteroid.size / 2 &&
-      spaceship.x - spaceship.width / 2 < asteroid.x + asteroid.size / 2 &&
-      spaceship.y < asteroid.y + asteroid.size / 2 &&
-      spaceship.y + spaceship.height > asteroid.y - asteroid.size / 2
-    ) {
-      if (!shieldActive) {
-        score -= 5;
-        document.getElementById('score').innerText = score;
-        asteroids.splice(index, 1);
-      }
-    }
   });
 }
 

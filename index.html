@@ -22,14 +22,23 @@
       font-weight: bold;
       color: green;
     }
+    .spaceship-selection {
+      margin: 10px 0;
+    }
   </style>
 </head>
 <body>
   <h1>Space Shooters</h1>
-  <p>Use your mouse to move the spaceship. Shoot as many asteroids as you can!</p>
+  <p>Choose Your Spaceship:</p>
+  <div class="spaceship-selection">
+    <button id="spaceship1">Red Fighter</button>
+    <button id="spaceship2">Blue Defender</button>
+    <button id="spaceship3">Green Speedster</button>
+  </div>
   <p>Score: <span id="score">0</span> | Level: <span id="level">1</span></p>
   <p>Time Left: <span id="timer">60</span> seconds</p>
   <canvas id="gameCanvas" width="800" height="600"></canvas>
+  <button id="pauseButton">Pause</button>
   <script src="game.js"></script>
 </body>
 </html>

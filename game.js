@@ -1,4 +1,4 @@
-console.log("Game script is running...");
+console.log("Game script is loaded.");
 
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
@@ -53,7 +53,7 @@ canvas.addEventListener('click', () => {
   // Main bullet
   bullets.push({ x: spaceship.x + spaceship.width / 2 - 2, y: spaceship.y });
 
-  // Second stream of bullets if twoStreams is active
+  // Additional streams of bullets if twoStreams is active
   if (twoStreams) {
     bullets.push({ x: spaceship.x + spaceship.width / 2 - 20, y: spaceship.y });
     bullets.push({ x: spaceship.x + spaceship.width / 2 + 20, y: spaceship.y });
@@ -157,7 +157,7 @@ function handleCollisions() {
         score += 1;
         document.getElementById('score').innerText = score;
 
-        // Trigger two streams of bullets after 3 hits
+        // Activate two streams of bullets after 3 hits
         if (score === 3) twoStreams = true;
 
         bullets.splice(bulletIndex, 1);

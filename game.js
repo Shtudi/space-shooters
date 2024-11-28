@@ -8,7 +8,7 @@ let spaceship = { x: 375, y: 500, width: 50, height: 50, color: 'red' };
 let asteroids = [];
 let bullets = [];
 let score = 0;
-let timeLeft = 30; // Changed to 30 seconds
+let timeLeft = 30; // 30 seconds per game
 let level = 1;
 let shieldActive = false;
 let paused = false;
@@ -52,10 +52,7 @@ canvas.addEventListener('mousemove', (e) => {
 
 // Event Listener for Shooting
 canvas.addEventListener('click', () => {
-  // Main bullet
   bullets.push({ x: spaceship.x + spaceship.width / 2 - 2, y: spaceship.y });
-
-  // Additional streams of bullets if twoStreams is active
   if (twoStreams) {
     bullets.push({ x: spaceship.x + spaceship.width / 2 - 20, y: spaceship.y });
     bullets.push({ x: spaceship.x + spaceship.width / 2 + 20, y: spaceship.y });
@@ -73,7 +70,6 @@ function gameLoop() {
   drawBullets();
   drawAsteroids();
   handleCollisions();
-  drawShield();
   updateTimer();
   checkLevelProgress();
 
@@ -89,7 +85,7 @@ function resetGame() {
   asteroids = [];
   bullets = [];
   score = 0;
-  timeLeft = 30; // Reset time to 30 seconds
+  timeLeft = 30;
   level = 1;
   shieldActive = false;
   twoStreams = false;
@@ -100,16 +96,8 @@ function resetGame() {
 
 // Background Animation
 function updateBackground() {
-  backgroundY += 2;
-  if (backgroundY > canvas.height) backgroundY = 0;
   ctx.fillStyle = 'black';
   ctx.fillRect(0, 0, canvas.width, canvas.height);
-  ctx.fillStyle = 'white';
-  for (let i = 0; i < 100; i++) {
-    const starX = Math.random() * canvas.width;
-    const starY = (Math.random() * canvas.height + backgroundY) % canvas.height;
-    ctx.fillRect(starX, starY, 2, 2);
-  }
 }
 
 // Draw Spaceship
@@ -121,17 +109,6 @@ function drawSpaceship() {
   ctx.lineTo(spaceship.x + spaceship.width / 2, spaceship.y + spaceship.height);
   ctx.closePath();
   ctx.fill();
-}
-
-// Draw Shield
-function drawShield() {
-  if (shieldActive) {
-    ctx.strokeStyle = 'blue';
-    ctx.lineWidth = 5;
-    ctx.beginPath();
-    ctx.arc(spaceship.x, spaceship.y + spaceship.height / 2, spaceship.width, 0, Math.PI * 2);
-    ctx.stroke();
-  }
 }
 
 // Draw Bullets
@@ -165,7 +142,7 @@ function drawAsteroids() {
       spaceship.y < asteroid.y + asteroid.size / 2 &&
       spaceship.y + spaceship.height > asteroid.y - asteroid.size / 2
     ) {
-      score -= 5; // Reduce score by 5
+      score -= 5; // Reduce score
       document.getElementById('score').innerText = score;
       asteroids.splice(index, 1);
     }
@@ -185,7 +162,29 @@ function handleCollisions() {
         score += 1;
         document.getElementById('score').innerText = score;
 
-        // Activate two streams of bullets after 3 hits
         if (score === 3) twoStreams = true;
 
-        bullets.splice(bulletIndex, 
+        bullets.splice(bulletIndex, 1);
+        if (asteroid.size > 20) {
+          asteroids.push({ x: asteroid.x - 10, y: asteroid.y, size: asteroid.size / 2 });
+          asteroids.push({ x: asteroid.x + 10, y: asteroid.y, size: asteroid.size / 2 });
+        }
+        asteroids.splice(asteroidIndex, 1);
+      }
+    });
+  });
+}
+
+// Update Timer
+function updateTimer() {
+  if (timeLeft > 0) {
+    timeLeft -= 1 / 60;
+    document.getElementById('timer').innerText = Math.floor(timeLeft);
+  }
+}
+
+// Check Level Progression
+function checkLevelProgress() {
+  if (timeLeft % 10 === 0 && timeLeft > 0) {
+    level += 1;
+    document

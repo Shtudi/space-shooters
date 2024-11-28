@@ -181,7 +181,7 @@ function updateTimer() {
 
 // Check Level Progression
 function checkLevelProgress() {
-  if (timeLeft % 20 === 0 && timeLeft > 0) {
+  if (Math.floor(timeLeft) % 20 === 0 && timeLeft > 0 && Math.floor(timeLeft) % 2 === 0) {
     level += 1;
     document.getElementById('level').innerText = level;
   }

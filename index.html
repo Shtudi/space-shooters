@@ -25,6 +25,30 @@
       font-weight: bold;
       color: green;
     }
+    #leaderboard {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background-color: black;
+      border: 2px solid pink;
+      color: pink;
+      padding: 10px;
+      font-size: 14px;
+      text-align: left;
+    }
+    #leaderboard h3 {
+      margin-bottom: 10px;
+      font-size: 16px;
+      color: pink;
+    }
+    #leaderboard ol {
+      padding: 0;
+      margin: 0;
+      list-style-type: none;
+    }
+    #leaderboard li {
+      margin: 5px 0;
+    }
   </style>
 </head>
 <body>
@@ -40,6 +64,14 @@
   <button id="startButton">Start</button>
   <button id="pauseButton">Pause</button>
   <canvas id="gameCanvas" width="800" height="600"></canvas>
+
+  <div id="leaderboard">
+    <h3>Leaderboard</h3>
+    <ol id="leaderboardList">
+      <li>No scores yet</li>
+    </ol>
+  </div>
+
   <script src="game.js"></script>
 </body>
 </html>

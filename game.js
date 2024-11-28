@@ -8,7 +8,7 @@ let spaceship = { x: 375, y: 500, width: 50, height: 50, color: 'red' };
 let asteroids = [];
 let bullets = [];
 let score = 0;
-let timeLeft = 60;
+let timeLeft = 30; // Changed to 30 seconds
 let level = 1;
 let shieldActive = false;
 let paused = false;
@@ -32,6 +32,7 @@ document.getElementById('spaceship3').addEventListener('click', () => {
 document.getElementById('startButton').addEventListener('click', () => {
   if (!gameStarted) {
     gameStarted = true;
+    resetGame();
     gameLoop();
   }
 });
@@ -81,6 +82,20 @@ function gameLoop() {
   } else {
     endGame();
   }
+}
+
+// Reset Game
+function resetGame() {
+  asteroids = [];
+  bullets = [];
+  score = 0;
+  timeLeft = 30; // Reset time to 30 seconds
+  level = 1;
+  shieldActive = false;
+  twoStreams = false;
+  document.getElementById('score').innerText = score;
+  document.getElementById('timer').innerText = timeLeft;
+  document.getElementById('level').innerText = level;
 }
 
 // Background Animation
@@ -142,6 +157,18 @@ function drawAsteroids() {
     ctx.arc(asteroid.x, asteroid.y, asteroid.size / 2, 0, Math.PI * 2);
     ctx.fill();
     if (asteroid.y > canvas.height) asteroids.splice(index, 1);
+
+    // Check collision with spaceship
+    if (
+      spaceship.x < asteroid.x + asteroid.size / 2 &&
+      spaceship.x + spaceship.width > asteroid.x - asteroid.size / 2 &&
+      spaceship.y < asteroid.y + asteroid.size / 2 &&
+      spaceship.y + spaceship.height > asteroid.y - asteroid.size / 2
+    ) {
+      score -= 5; // Reduce score by 5
+      document.getElementById('score').innerText = score;
+      asteroids.splice(index, 1);
+    }
   });
 }
 
@@ -161,36 +188,4 @@ function handleCollisions() {
         // Activate two streams of bullets after 3 hits
         if (score === 3) twoStreams = true;
 
-        bullets.splice(bulletIndex, 1);
-
-        // Split asteroid into smaller pieces
-        if (asteroid.size > 20) {
-          asteroids.push({ x: asteroid.x - 10, y: asteroid.y, size: asteroid.size / 2 });
-          asteroids.push({ x: asteroid.x + 10, y: asteroid.y, size: asteroid.size / 2 });
-        }
-        asteroids.splice(asteroidIndex, 1);
-      }
-    });
-  });
-}
-
-// Update Timer
-function updateTimer() {
-  if (timeLeft > 0) {
-    timeLeft -= 1 / 60;
-    document.getElementById('timer').innerText = Math.floor(timeLeft);
-  }
-}
-
-// Check Level Progression
-function checkLevelProgress() {
-  if (timeLeft % 20 === 0 && timeLeft > 0) {
-    level += 1;
-    document.getElementById('level').innerText = level;
-  }
-}
-
-// Update Leaderboard
-function updateLeaderboard() {
-  leaderboard.push(score);
-  leaderboard.sort((
+        bullets.splice(bulletIndex, 

@@ -26,7 +26,10 @@ document.getElementById('spaceship2').addEventListener('click', () => spaceship.
 document.getElementById('spaceship3').addEventListener('click', () => spaceship.color = 'green');
 
 // Pause Game
-document.getElementById('pauseButton').addEventListener('click', () => paused = !paused);
+document.getElementById('pauseButton').addEventListener('click', () => {
+  paused = !paused;
+  if (!paused) gameLoop(); // Resume game
+});
 
 // Event Listener for Mouse Movement
 canvas.addEventListener('mousemove', (e) => {

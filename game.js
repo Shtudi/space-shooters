@@ -198,25 +198,18 @@ function drawAsteroids() {
 
 // Handle collisions
 function handleCollisions() {
-  bullets.forEach((bullet, bulletIndex) => {
-    asteroids.forEach((asteroid, asteroidIndex) => {
+  bullets.forEach((bullet, bIndex) => {
+    asteroids.forEach((asteroid, aIndex) => {
       if (
         bullet.x > asteroid.x - asteroid.size / 2 &&
         bullet.x < asteroid.x + asteroid.size / 2 &&
-        bullet.y < asteroid.y + asteroid.size / 2 &&
-        bullet.y > asteroid.y - asteroid.size / 2
+        bullet.y > asteroid.y - asteroid.size / 2 &&
+        bullet.y < asteroid.y + asteroid.size / 2
       ) {
-        score += 1;
+        score += 10;
         document.getElementById("score").innerText = score;
-
-        if (score >= 3) twoStreams = true;
-
-        bullets.splice(bulletIndex, 1);
-        if (asteroid.size > 20) {
-          asteroids.push({ x: asteroid.x - 10, y: asteroid.y, size: asteroid.size / 2 });
-          asteroids.push({ x: asteroid.x + 10, y: asteroid.y, size: asteroid.size / 2 });
-        }
-        asteroids.splice(asteroidIndex, 1);
+        bullets.splice(bIndex, 1);
+        asteroids.splice(aIndex, 1);
       }
     });
   });
@@ -224,26 +217,28 @@ function handleCollisions() {
 
 // Update timer
 function updateTimer() {
-  if (timeLeft > 0) {
-    timeLeft -= 1 / 60;
-    document.getElementById("timer").innerText = Math.floor(timeLeft);
-  }
+  timeLeft -= 0.016;
+  document.getElementById("timer").innerText = Math.ceil(timeLeft);
 }
 
-// Check level progression
+// Check level progress
 function checkLevelProgress() {
-  if (timeLeft % 10 === 0 && timeLeft > 0) {
-    level += 1;
+  if (score >= level * 100) {
+    level++;
     document.getElementById("level").innerText = level;
+  }
+
+  if (score >= 300 && !twoStreams) {
+    twoStreams = true; // Activate double bullets
   }
 }
 
 // End game
 function endGame() {
-  alert(`Game Over! Your score: ${score}`);
-  updateLeaderboard(); // Push the score to GitHub
   gameStarted = false;
+  paused = true;
+  alert(`Game Over! Final Score: ${score}`);
+  updateLeaderboard();
 }
 
-// Fetch the leaderboard when the game starts
 fetchLeaderboard();

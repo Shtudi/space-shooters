@@ -21,9 +21,9 @@ const explosionSound = new Audio('https://freesound.org/data/previews/178/178186
 const crashSound = new Audio('https://freesound.org/data/previews/458/458137_5901753-lq.mp3');
 
 // Spaceship Selection
-document.getElementById('spaceship1').addEventListener('click', () => spaceship.color = 'red');
-document.getElementById('spaceship2').addEventListener('click', () => spaceship.color = 'blue');
-document.getElementById('spaceship3').addEventListener('click', () => spaceship.color = 'green');
+document.getElementById('spaceship1').addEventListener('click', () => (spaceship.color = 'red'));
+document.getElementById('spaceship2').addEventListener('click', () => (spaceship.color = 'blue'));
+document.getElementById('spaceship3').addEventListener('click', () => (spaceship.color = 'green'));
 
 // Pause Game
 document.getElementById('pauseButton').addEventListener('click', () => {

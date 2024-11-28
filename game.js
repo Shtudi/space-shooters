@@ -187,4 +187,26 @@ function updateTimer() {
 function checkLevelProgress() {
   if (timeLeft % 10 === 0 && timeLeft > 0) {
     level += 1;
-    document.getElementBy
+    document.getElementById('level').innerText = level;
+  }
+}
+
+// Update Leaderboard
+function updateLeaderboard() {
+  leaderboard.push(score);
+  leaderboard.sort((a, b) => b - a);
+  leaderboard = leaderboard.slice(0, 3);
+  localStorage.setItem('leaderboard', JSON.stringify(leaderboard));
+
+  const leaderboardList = document.getElementById('leaderboardList');
+  leaderboardList.innerHTML = leaderboard
+    .map((score, index) => `<li>#${index + 1}: ${score}</li>`)
+    .join('');
+}
+
+// End Game
+function endGame() {
+  updateLeaderboard();
+  alert(`Game Over! Your score: ${score}`);
+  gameStarted = false;
+}

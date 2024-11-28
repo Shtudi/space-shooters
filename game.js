@@ -7,7 +7,6 @@ const ctx = canvas.getContext('2d');
 let spaceship = { x: 375, y: 500, width: 50, height: 50, color: 'red' };
 let asteroids = [];
 let bullets = [];
-let particles = [];
 let score = 0;
 let timeLeft = 60;
 let level = 1;
@@ -15,10 +14,15 @@ let shieldActive = false;
 let paused = false;
 let backgroundY = 0;
 
-// Audio effects
-const shootSound = new Audio('https://freesound.org/data/previews/323/323095_5260874-lq.mp3');
-const explosionSound = new Audio('https://freesound.org/data/previews/178/178186_633166-lq.mp3');
-const crashSound = new Audio('https://freesound.org/data/previews/458/458137_5901753-lq.mp3');
+// Audio effects (replaced with reliable sources)
+const shootSound = new Audio('https://www.soundjay.com/button/beep-07.mp3');
+const explosionSound = new Audio('https://www.soundjay.com/explosion/explosion-06.mp3');
+const crashSound = new Audio('https://www.soundjay.com/mechanical/clang-01.mp3');
+
+// Ensure audio plays in browsers with autoplay restrictions
+shootSound.onerror = () => console.error("Shoot sound not supported");
+explosionSound.onerror = () => console.error("Explosion sound not supported");
+crashSound.onerror = () => console.error("Crash sound not supported");
 
 // Spaceship Selection
 document.getElementById('spaceship1').addEventListener('click', () => {
@@ -60,7 +64,6 @@ function gameLoop() {
   drawSpaceship();
   drawBullets();
   drawAsteroids();
-  drawParticles();
   handleCollisions();
   drawShield();
   updateTimer();
@@ -181,7 +184,7 @@ function updateTimer() {
 
 // Check Level Progression
 function checkLevelProgress() {
-  if (Math.floor(timeLeft) % 20 === 0 && timeLeft > 0 && Math.floor(timeLeft) % 2 === 0) {
+  if (timeLeft % 20 === 0 && timeLeft > 0) {
     level += 1;
     document.getElementById('level').innerText = level;
   }

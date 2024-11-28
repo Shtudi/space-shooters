@@ -14,6 +14,7 @@ let level = 1;
 let paused = false;
 let gameStarted = false;
 let twoStreams = false;
+let playerName = "";
 
 // Fetch leaderboard from GitHub
 async function fetchLeaderboard() {
@@ -24,7 +25,7 @@ async function fetchLeaderboard() {
     const data = await response.json();
     const sortedScores = data.scores.sort((a, b) => b.score - a.score).slice(0, 3);
     leaderboardList.innerHTML = sortedScores
-      .map((entry, index) => `<li>#${index + 1}: ${entry.score} - ${entry.name}</li>`)
+      .map((entry, index) => `<li>#${index + 1}: ${entry.name} - ${entry.score} points</li>`)
       .join("");
   } catch (error) {
     console.error("Failed to fetch leaderboard:", error);
@@ -34,8 +35,10 @@ async function fetchLeaderboard() {
 
 // Update leaderboard in GitHub (manual)
 async function updateLeaderboard() {
-  const playerName = prompt("Enter your name for the leaderboard:");
-  if (!playerName) return;
+  if (!playerName) {
+    alert("Please enter your nickname before starting the game!");
+    return;
+  }
 
   try {
     const response = await fetch("https://raw.githubusercontent.com/Shtudi/space-shooters/main/leaderboard.json");
@@ -71,6 +74,11 @@ document.getElementById("spaceship3").addEventListener("click", () => {
 // Start button
 document.getElementById("startButton").addEventListener("click", () => {
   if (!gameStarted) {
+    playerName = document.getElementById("playerName").value.trim();
+    if (!playerName) {
+      alert("Please enter a nickname before starting the game!");
+      return;
+    }
     gameStarted = true;
     resetGame();
     gameLoop();

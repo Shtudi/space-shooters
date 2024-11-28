@@ -1,35 +1,34 @@
 console.log("Game script is loaded.");
 
-const canvas = document.getElementById('gameCanvas');
-const ctx = canvas.getContext('2d');
+// Canvas setup
+const canvas = document.getElementById("gameCanvas");
+const ctx = canvas.getContext("2d");
 
 // Game variables
-let spaceship = { x: 375, y: 500, width: 50, height: 50, color: 'red' };
+let spaceship = { x: 375, y: 500, width: 50, height: 50, color: "red" };
 let asteroids = [];
 let bullets = [];
 let score = 0;
-let timeLeft = 30; // 30 seconds per game
+let timeLeft = 30; // Game duration in seconds
 let level = 1;
-let shieldActive = false;
 let paused = false;
 let gameStarted = false;
-let backgroundY = 0;
-let twoStreams = false;
-let leaderboard = JSON.parse(localStorage.getItem('leaderboard')) || [];
+let twoStreams = false; // Enable double bullet streams after 3 points
+let leaderboard = JSON.parse(localStorage.getItem("leaderboard")) || []; // Load saved leaderboard
 
-// Spaceship Selection
-document.getElementById('spaceship1').addEventListener('click', () => {
-  spaceship.color = 'red';
+// Spaceship selection buttons
+document.getElementById("spaceship1").addEventListener("click", () => {
+  spaceship.color = "red";
 });
-document.getElementById('spaceship2').addEventListener('click', () => {
-  spaceship.color = 'blue';
+document.getElementById("spaceship2").addEventListener("click", () => {
+  spaceship.color = "blue";
 });
-document.getElementById('spaceship3').addEventListener('click', () => {
-  spaceship.color = 'green';
+document.getElementById("spaceship3").addEventListener("click", () => {
+  spaceship.color = "green";
 });
 
-// Start Game
-document.getElementById('startButton').addEventListener('click', () => {
+// Start button
+document.getElementById("startButton").addEventListener("click", () => {
   if (!gameStarted) {
     gameStarted = true;
     resetGame();
@@ -37,21 +36,21 @@ document.getElementById('startButton').addEventListener('click', () => {
   }
 });
 
-// Pause Game
-document.getElementById('pauseButton').addEventListener('click', () => {
+// Pause button
+document.getElementById("pauseButton").addEventListener("click", () => {
   paused = !paused;
-  if (!paused) gameLoop(); // Resume game
+  if (!paused) gameLoop(); // Resume the game if unpaused
 });
 
-// Event Listener for Mouse Movement
-canvas.addEventListener('mousemove', (e) => {
+// Track mouse movement for spaceship position
+canvas.addEventListener("mousemove", (e) => {
   const rect = canvas.getBoundingClientRect();
   spaceship.x = e.clientX - rect.left - spaceship.width / 2;
   spaceship.y = e.clientY - rect.top - spaceship.height / 2;
 });
 
-// Event Listener for Shooting
-canvas.addEventListener('click', () => {
+// Shoot bullets on canvas click
+canvas.addEventListener("click", () => {
   bullets.push({ x: spaceship.x + spaceship.width / 2 - 2, y: spaceship.y });
   if (twoStreams) {
     bullets.push({ x: spaceship.x + spaceship.width / 2 - 20, y: spaceship.y });
@@ -59,7 +58,7 @@ canvas.addEventListener('click', () => {
   }
 });
 
-// Game Loop
+// Main game loop
 function gameLoop() {
   if (paused) return;
 
@@ -80,27 +79,26 @@ function gameLoop() {
   }
 }
 
-// Reset Game
+// Reset game state
 function resetGame() {
   asteroids = [];
   bullets = [];
   score = 0;
   timeLeft = 30;
   level = 1;
-  shieldActive = false;
   twoStreams = false;
-  document.getElementById('score').innerText = score;
-  document.getElementById('timer').innerText = timeLeft;
-  document.getElementById('level').innerText = level;
+  document.getElementById("score").innerText = score;
+  document.getElementById("timer").innerText = timeLeft;
+  document.getElementById("level").innerText = level;
 }
 
-// Background Animation
+// Background rendering
 function updateBackground() {
-  ctx.fillStyle = 'black';
+  ctx.fillStyle = "black";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 }
 
-// Draw Spaceship
+// Spaceship rendering
 function drawSpaceship() {
   ctx.fillStyle = spaceship.color;
   ctx.beginPath();
@@ -111,28 +109,30 @@ function drawSpaceship() {
   ctx.fill();
 }
 
-// Draw Bullets
+// Bullets rendering
 function drawBullets() {
-  ctx.fillStyle = 'white';
+  ctx.fillStyle = "white";
   bullets.forEach((bullet, index) => {
     bullet.y -= 5;
     ctx.fillRect(bullet.x, bullet.y, 4, 10);
-    if (bullet.y < 0) bullets.splice(index, 1);
+    if (bullet.y < 0) bullets.splice(index, 1); // Remove off-screen bullets
   });
 }
 
-// Draw Asteroids
+// Asteroids rendering
 function drawAsteroids() {
-  ctx.fillStyle = 'yellow';
+  ctx.fillStyle = "yellow";
   if (Math.random() < 0.02 + level * 0.005) {
     const newAsteroid = { x: Math.random() * canvas.width, y: 0, size: 30 + level * 2 };
     asteroids.push(newAsteroid);
   }
   asteroids.forEach((asteroid, index) => {
-    asteroid.y += 2 + level * 0.5;
+    asteroid.y += 2 + level * 0.5; // Asteroid speed increases with level
     ctx.beginPath();
     ctx.arc(asteroid.x, asteroid.y, asteroid.size / 2, 0, Math.PI * 2);
     ctx.fill();
+
+    // Remove off-screen asteroids
     if (asteroid.y > canvas.height) asteroids.splice(index, 1);
 
     // Check collision with spaceship
@@ -142,14 +142,14 @@ function drawAsteroids() {
       spaceship.y < asteroid.y + asteroid.size / 2 &&
       spaceship.y + spaceship.height > asteroid.y - asteroid.size / 2
     ) {
-      score -= 5; // Reduce score
-      document.getElementById('score').innerText = score;
+      score -= 5; // Penalize score on collision
+      document.getElementById("score").innerText = score;
       asteroids.splice(index, 1);
     }
   });
 }
 
-// Handle Collisions
+// Handle collisions between bullets and asteroids
 function handleCollisions() {
   bullets.forEach((bullet, bulletIndex) => {
     asteroids.forEach((asteroid, asteroidIndex) => {
@@ -160,12 +160,14 @@ function handleCollisions() {
         bullet.y > asteroid.y - asteroid.size / 2
       ) {
         score += 1;
-        document.getElementById('score').innerText = score;
+        document.getElementById("score").innerText = score;
 
-        if (score === 3) twoStreams = true;
+        // Enable double bullet streams after 3 points
+        if (score >= 3) twoStreams = true;
 
         bullets.splice(bulletIndex, 1);
         if (asteroid.size > 20) {
+          // Split asteroid into smaller pieces
           asteroids.push({ x: asteroid.x - 10, y: asteroid.y, size: asteroid.size / 2 });
           asteroids.push({ x: asteroid.x + 10, y: asteroid.y, size: asteroid.size / 2 });
         }
@@ -175,36 +177,36 @@ function handleCollisions() {
   });
 }
 
-// Update Timer
+// Update timer display
 function updateTimer() {
   if (timeLeft > 0) {
-    timeLeft -= 1 / 60;
-    document.getElementById('timer').innerText = Math.floor(timeLeft);
+    timeLeft -= 1 / 60; // Reduce time by 1 frame
+    document.getElementById("timer").innerText = Math.floor(timeLeft);
   }
 }
 
-// Check Level Progression
+// Check level progress and update
 function checkLevelProgress() {
   if (timeLeft % 10 === 0 && timeLeft > 0) {
     level += 1;
-    document.getElementById('level').innerText = level;
+    document.getElementById("level").innerText = level;
   }
 }
 
-// Update Leaderboard
+// Update leaderboard
 function updateLeaderboard() {
   leaderboard.push(score);
   leaderboard.sort((a, b) => b - a);
-  leaderboard = leaderboard.slice(0, 3);
-  localStorage.setItem('leaderboard', JSON.stringify(leaderboard));
+  leaderboard = leaderboard.slice(0, 3); // Keep top 3 scores
+  localStorage.setItem("leaderboard", JSON.stringify(leaderboard));
 
-  const leaderboardList = document.getElementById('leaderboardList');
+  const leaderboardList = document.getElementById("leaderboardList");
   leaderboardList.innerHTML = leaderboard
     .map((score, index) => `<li>#${index + 1}: ${score}</li>`)
-    .join('');
+    .join("");
 }
 
-// End Game
+// End the game
 function endGame() {
   updateLeaderboard();
   alert(`Game Over! Your score: ${score}`);

@@ -14,51 +14,7 @@ let level = 1;
 let paused = false;
 let gameStarted = false;
 let twoStreams = false;
-let playerName = "";
-
-// Fetch leaderboard from GitHub
-async function fetchLeaderboard() {
-  const leaderboardList = document.getElementById("leaderboardList");
-  leaderboardList.innerHTML = "Loading...";
-  try {
-    const response = await fetch("https://raw.githubusercontent.com/Shtudi/space-shooters/main/leaderboard.json");
-    const data = await response.json();
-    const sortedScores = data.scores.sort((a, b) => b.score - a.score).slice(0, 3);
-    leaderboardList.innerHTML = sortedScores
-      .map((entry, index) => `<li>#${index + 1}: ${entry.name} - ${entry.score} points</li>`)
-      .join("");
-  } catch (error) {
-    console.error("Failed to fetch leaderboard:", error);
-    leaderboardList.innerHTML = "<li>Error loading leaderboard</li>";
-  }
-}
-
-// Update leaderboard in GitHub (manual)
-async function updateLeaderboard() {
-  if (!playerName) {
-    alert("Please enter your nickname before starting the game!");
-    return;
-  }
-
-  try {
-    const response = await fetch("https://raw.githubusercontent.com/Shtudi/space-shooters/main/leaderboard.json");
-    const data = await response.json();
-
-    // Add the new score
-    data.scores.push({ name: playerName, score });
-
-    // Sort and limit to top 3
-    const sortedScores = data.scores.sort((a, b) => b.score - a.score).slice(0, 3);
-
-    // Display the updated leaderboard
-    console.log("Copy this updated JSON and replace leaderboard.json in your GitHub repository:", JSON.stringify({ scores: sortedScores }));
-    alert("Please update your leaderboard.json file on GitHub to reflect the new scores.");
-  } catch (error) {
-    console.error("Failed to update leaderboard:", error);
-  }
-
-  fetchLeaderboard();
-}
+let leaderboard = JSON.parse(localStorage.getItem("leaderboard")) || [];
 
 // Spaceship selection buttons
 document.getElementById("spaceship1").addEventListener("click", () => {
@@ -74,11 +30,6 @@ document.getElementById("spaceship3").addEventListener("click", () => {
 // Start button
 document.getElementById("startButton").addEventListener("click", () => {
   if (!gameStarted) {
-    playerName = document.getElementById("playerName").value.trim();
-    if (!playerName) {
-      alert("Please enter a nickname before starting the game!");
-      return;
-    }
     gameStarted = true;
     resetGame();
     gameLoop();
@@ -238,12 +189,22 @@ function checkLevelProgress() {
   }
 }
 
-// End game
-function endGame() {
-  alert(`Game Over! Your score: ${score}`);
-  updateLeaderboard(); // Push the score to GitHub
-  gameStarted = false;
+// Update leaderboard
+function updateLeaderboard() {
+  leaderboard.push(score);
+  leaderboard.sort((a, b) => b - a);
+  leaderboard = leaderboard.slice(0, 3);
+  localStorage.setItem("leaderboard", JSON.stringify(leaderboard));
+
+  const leaderboardList = document.getElementById("leaderboardList");
+  leaderboardList.innerHTML = leaderboard
+    .map((score, index) => `<li>#${index + 1}: ${score}</li>`)
+    .join("");
 }
 
-// Fetch the leaderboard when the game starts
-fetchLeaderboard();
+// End game
+function endGame() {
+  updateLeaderboard();
+  alert(`Game Over! Your score: ${score}`);
+  gameStarted = false;
+}

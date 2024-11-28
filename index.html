@@ -18,7 +18,7 @@
     h1 {
       color: blue;
     }
-    #score, #timer {
+    #score, #timer, #level {
       font-weight: bold;
       color: green;
     }
@@ -26,8 +26,8 @@
 </head>
 <body>
   <h1>Space Shooters</h1>
-  <p>Use your mouse to move the spaceship. Shoot as many asteroids as you can in one minute!</p>
-  <p>Score: <span id="score">0</span></p>
+  <p>Use your mouse to move the spaceship. Shoot as many asteroids as you can!</p>
+  <p>Score: <span id="score">0</span> | Level: <span id="level">1</span></p>
   <p>Time Left: <span id="timer">60</span> seconds</p>
   <canvas id="gameCanvas" width="800" height="600"></canvas>
   <script src="game.js"></script>

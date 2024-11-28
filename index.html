@@ -5,40 +5,41 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Space Shooters</title>
   <style>
-    canvas {
-      display: block;
-      margin: 0 auto;
-      background: black;
-    }
     body {
       text-align: center;
-      color: white;
       font-family: Arial, sans-serif;
+      background-color: black;
+      color: white;
     }
-    h1 {
-      color: blue;
+    canvas {
+      display: block;
+      margin: 20px auto;
+      border: 2px solid white;
+    }
+    button {
+      margin: 5px;
+      padding: 10px 20px;
+      font-size: 16px;
     }
     #score, #timer, #level {
       font-weight: bold;
       color: green;
     }
-    .spaceship-selection {
-      margin: 10px 0;
-    }
   </style>
 </head>
 <body>
-  <h1>Space Shooters</h1>
-  <p>Choose Your Spaceship:</p>
-  <div class="spaceship-selection">
-    <button id="spaceship1">Red Fighter</button>
-    <button id="spaceship2">Blue Defender</button>
-    <button id="spaceship3">Green Speedster</button>
+  <h1 style="color: blue;">Space Shooters</h1>
+  <button id="spaceship1">Red Fighter</button>
+  <button id="spaceship2">Blue Defender</button>
+  <button id="spaceship3">Green Speedster</button>
+  <div>
+    <span>Score: <span id="score">0</span></span>
+    <span> | Time: <span id="timer">60</span></span>
+    <span> | Level: <span id="level">1</span></span>
   </div>
-  <p>Score: <span id="score">0</span> | Level: <span id="level">1</span></p>
-  <p>Time Left: <span id="timer">60</span> seconds</p>
-  <canvas id="gameCanvas" width="800" height="600"></canvas>
+  <button id="startButton">Start</button>
   <button id="pauseButton">Pause</button>
+  <canvas id="gameCanvas" width="800" height="600"></canvas>
   <script src="game.js"></script>
 </body>
 </html>

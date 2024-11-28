@@ -12,17 +12,8 @@ let timeLeft = 60;
 let level = 1;
 let shieldActive = false;
 let paused = false;
+let gameStarted = false;
 let backgroundY = 0;
-
-// Audio effects (replaced with reliable sources)
-const shootSound = new Audio('https://www.soundjay.com/button/beep-07.mp3');
-const explosionSound = new Audio('https://www.soundjay.com/explosion/explosion-06.mp3');
-const crashSound = new Audio('https://www.soundjay.com/mechanical/clang-01.mp3');
-
-// Ensure audio plays in browsers with autoplay restrictions
-shootSound.onerror = () => console.error("Shoot sound not supported");
-explosionSound.onerror = () => console.error("Explosion sound not supported");
-crashSound.onerror = () => console.error("Crash sound not supported");
 
 // Spaceship Selection
 document.getElementById('spaceship1').addEventListener('click', () => {
@@ -33,6 +24,14 @@ document.getElementById('spaceship2').addEventListener('click', () => {
 });
 document.getElementById('spaceship3').addEventListener('click', () => {
   spaceship.color = 'green';
+});
+
+// Start Game
+document.getElementById('startButton').addEventListener('click', () => {
+  if (!gameStarted) {
+    gameStarted = true;
+    gameLoop();
+  }
 });
 
 // Pause Game
@@ -51,7 +50,6 @@ canvas.addEventListener('mousemove', (e) => {
 // Event Listener for Shooting
 canvas.addEventListener('click', () => {
   bullets.push({ x: spaceship.x + spaceship.width / 2 - 2, y: spaceship.y });
-  shootSound.play();
 });
 
 // Game Loop
@@ -152,7 +150,6 @@ function handleCollisions() {
         document.getElementById('score').innerText = score;
         bullets.splice(bulletIndex, 1);
         asteroids.splice(asteroidIndex, 1);
-        explosionSound.play();
       }
     });
   });
@@ -168,7 +165,6 @@ function handleCollisions() {
         score -= 5;
         document.getElementById('score').innerText = score;
         asteroids.splice(index, 1);
-        crashSound.play();
       }
     }
   });
@@ -195,6 +191,3 @@ function endGame() {
   alert(`Game Over! Your Score: ${score}`);
   window.location.reload();
 }
-
-// Start Game
-gameLoop();

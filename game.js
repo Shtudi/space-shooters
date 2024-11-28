@@ -17,13 +17,11 @@ console.log("Canvas initialized:", canvas, ctx);
 canvas.addEventListener('mousemove', (e) => {
   const rect = canvas.getBoundingClientRect();
   spaceship.x = e.clientX - rect.left - spaceship.width / 2;
-  console.log(`Spaceship Position Updated: x=${spaceship.x}`);
 });
 
 // Event Listener for Shooting
 canvas.addEventListener('click', () => {
   bullets.push({ x: spaceship.x + spaceship.width / 2 - 2, y: spaceship.y });
-  console.log("Bullet fired:", bullets[bullets.length - 1]);
 });
 
 // Game Loop
@@ -43,11 +41,15 @@ function gameLoop() {
   }
 }
 
-// Draw Spaceship
+// Draw Spaceship (Cool Triangle Shape)
 function drawSpaceship() {
   ctx.fillStyle = 'red'; // Spaceship is red
-  ctx.fillRect(spaceship.x, spaceship.y, spaceship.width, spaceship.height);
-  console.log("Spaceship drawn at:", spaceship.x, spaceship.y);
+  ctx.beginPath();
+  ctx.moveTo(spaceship.x, spaceship.y); // Top point of the triangle
+  ctx.lineTo(spaceship.x - spaceship.width / 2, spaceship.y + spaceship.height); // Bottom-left
+  ctx.lineTo(spaceship.x + spaceship.width / 2, spaceship.y + spaceship.height); // Bottom-right
+  ctx.closePath();
+  ctx.fill();
 }
 
 // Draw Bullets
@@ -59,7 +61,6 @@ function drawBullets() {
 
     if (bullet.y < 0) {
       bullets.splice(index, 1);
-      console.log("Bullet removed (out of screen):", bullet);
     }
   });
 }
@@ -70,7 +71,6 @@ function drawAsteroids() {
   if (Math.random() < 0.02) {
     const newAsteroid = { x: Math.random() * canvas.width, y: 0, size: 30 };
     asteroids.push(newAsteroid);
-    console.log("New asteroid created:", newAsteroid);
   }
 
   asteroids.forEach((asteroid, index) => {
@@ -81,13 +81,13 @@ function drawAsteroids() {
 
     if (asteroid.y > canvas.height) {
       asteroids.splice(index, 1);
-      console.log("Asteroid removed (out of screen):", asteroid);
     }
   });
 }
 
 // Handle Collisions
 function handleCollisions() {
+  // Check collisions between bullets and asteroids
   bullets.forEach((bullet, bulletIndex) => {
     asteroids.forEach((asteroid, asteroidIndex) => {
       if (
@@ -97,13 +97,28 @@ function handleCollisions() {
         bullet.y > asteroid.y - asteroid.size / 2
       ) {
         // Collision detected
-        score += 10;
+        score += 1; // +1 point per asteroid
         document.getElementById('score').innerText = score;
-        console.log(`Collision! Score: ${score}`);
         bullets.splice(bulletIndex, 1);
         asteroids.splice(asteroidIndex, 1);
       }
     });
+  });
+
+  // Check collisions between spaceship and asteroids
+  asteroids.forEach((asteroid, index) => {
+    if (
+      spaceship.x < asteroid.x + asteroid.size / 2 &&
+      spaceship.x + spaceship.width > asteroid.x - asteroid.size / 2 &&
+      spaceship.y < asteroid.y + asteroid.size / 2 &&
+      spaceship.y + spaceship.height > asteroid.y - asteroid.size / 2
+    ) {
+      // Collision with spaceship
+      score -= 5; // -5 points per collision
+      document.getElementById('score').innerText = score;
+      console.log("Strike! -5 points.");
+      asteroids.splice(index, 1); // Remove asteroid after collision
+    }
   });
 }
 
@@ -112,7 +127,6 @@ function updateTimer() {
   if (timeLeft > 0) {
     timeLeft -= 1 / 60; // Decrease by 1 frame
     document.getElementById('timer').innerText = Math.floor(timeLeft);
-    console.log("Time Left:", Math.floor(timeLeft));
   }
 }
 

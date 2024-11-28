@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Space Shooters</title>
+  <style>
+    canvas {
+      display: block;
+      margin: 0 auto;
+      background: black;
+    }
+    body {
+      text-align: center;
+      color: white;
+      font-family: Arial, sans-serif;
+    }
+  </style>
+</head>
+<body>
+  <h1>Space Shooters</h1>
+  <p>Use your mouse to move the spaceship. Shoot as many asteroids as you can in one minute!</p>
+  <p>Score: <span id="score">0</span></p>
+  <p>Time Left: <span id="timer">60</span> seconds</p>
+  <canvas id="gameCanvas" width="800" height="600"></canvas>
+  <script src="game.js"></script>
+</body>
+</html>

@@ -15,6 +15,7 @@ let paused = false;
 let gameStarted = false;
 let backgroundY = 0;
 let twoStreams = false;
+let leaderboard = JSON.parse(localStorage.getItem('leaderboard')) || [];
 
 // Spaceship Selection
 document.getElementById('spaceship1').addEventListener('click', () => {
@@ -189,8 +190,7 @@ function checkLevelProgress() {
   }
 }
 
-// End Game
-function endGame() {
-  alert(`Game Over! Your Score: ${score}`);
-  window.location.reload();
-}
+// Update Leaderboard
+function updateLeaderboard() {
+  leaderboard.push(score);
+  leaderboard.sort((

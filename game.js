@@ -4,7 +4,7 @@ const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
 // Game variables
-let spaceship = { x: 400, y: 500, width: 50, height: 50 };
+let spaceship = { x: 375, y: 500, width: 50, height: 50 };
 let asteroids = [];
 let bullets = [];
 let score = 0;

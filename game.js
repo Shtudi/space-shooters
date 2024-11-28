@@ -1,6 +1,6 @@
-console.log("Game script is loaded.");
+console.log("Game script loaded!");
 
-// Canvas setup
+// Game setup
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
@@ -9,12 +9,12 @@ let spaceship = { x: 375, y: 500, width: 50, height: 50, color: "red" };
 let asteroids = [];
 let bullets = [];
 let score = 0;
-let timeLeft = 30; // Game duration in seconds
+let timeLeft = 30; // Seconds
 let level = 1;
 let paused = false;
 let gameStarted = false;
-let twoStreams = false; // Enable double bullet streams after 3 points
-let leaderboard = JSON.parse(localStorage.getItem("leaderboard")) || []; // Load saved leaderboard
+let twoStreams = false;
+let leaderboard = JSON.parse(localStorage.getItem("leaderboard")) || [];
 
 // Spaceship selection buttons
 document.getElementById("spaceship1").addEventListener("click", () => {
@@ -39,17 +39,17 @@ document.getElementById("startButton").addEventListener("click", () => {
 // Pause button
 document.getElementById("pauseButton").addEventListener("click", () => {
   paused = !paused;
-  if (!paused) gameLoop(); // Resume the game if unpaused
+  if (!paused) gameLoop();
 });
 
-// Track mouse movement for spaceship position
+// Mouse movement to control spaceship
 canvas.addEventListener("mousemove", (e) => {
   const rect = canvas.getBoundingClientRect();
   spaceship.x = e.clientX - rect.left - spaceship.width / 2;
   spaceship.y = e.clientY - rect.top - spaceship.height / 2;
 });
 
-// Shoot bullets on canvas click
+// Click to shoot bullets
 canvas.addEventListener("click", () => {
   bullets.push({ x: spaceship.x + spaceship.width / 2 - 2, y: spaceship.y });
   if (twoStreams) {
@@ -98,7 +98,7 @@ function updateBackground() {
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 }
 
-// Spaceship rendering
+// Draw spaceship
 function drawSpaceship() {
   ctx.fillStyle = spaceship.color;
   ctx.beginPath();
@@ -109,7 +109,7 @@ function drawSpaceship() {
   ctx.fill();
 }
 
-// Bullets rendering
+// Draw bullets
 function drawBullets() {
   ctx.fillStyle = "white";
   bullets.forEach((bullet, index) => {
@@ -119,7 +119,7 @@ function drawBullets() {
   });
 }
 
-// Asteroids rendering
+// Draw asteroids
 function drawAsteroids() {
   ctx.fillStyle = "yellow";
   if (Math.random() < 0.02 + level * 0.005) {
@@ -127,29 +127,27 @@ function drawAsteroids() {
     asteroids.push(newAsteroid);
   }
   asteroids.forEach((asteroid, index) => {
-    asteroid.y += 2 + level * 0.5; // Asteroid speed increases with level
+    asteroid.y += 2 + level * 0.5;
     ctx.beginPath();
     ctx.arc(asteroid.x, asteroid.y, asteroid.size / 2, 0, Math.PI * 2);
     ctx.fill();
 
-    // Remove off-screen asteroids
     if (asteroid.y > canvas.height) asteroids.splice(index, 1);
 
-    // Check collision with spaceship
     if (
       spaceship.x < asteroid.x + asteroid.size / 2 &&
       spaceship.x + spaceship.width > asteroid.x - asteroid.size / 2 &&
       spaceship.y < asteroid.y + asteroid.size / 2 &&
       spaceship.y + spaceship.height > asteroid.y - asteroid.size / 2
     ) {
-      score -= 5; // Penalize score on collision
+      score -= 5;
       document.getElementById("score").innerText = score;
       asteroids.splice(index, 1);
     }
   });
 }
 
-// Handle collisions between bullets and asteroids
+// Handle collisions
 function handleCollisions() {
   bullets.forEach((bullet, bulletIndex) => {
     asteroids.forEach((asteroid, asteroidIndex) => {
@@ -162,12 +160,10 @@ function handleCollisions() {
         score += 1;
         document.getElementById("score").innerText = score;
 
-        // Enable double bullet streams after 3 points
         if (score >= 3) twoStreams = true;
 
         bullets.splice(bulletIndex, 1);
         if (asteroid.size > 20) {
-          // Split asteroid into smaller pieces
           asteroids.push({ x: asteroid.x - 10, y: asteroid.y, size: asteroid.size / 2 });
           asteroids.push({ x: asteroid.x + 10, y: asteroid.y, size: asteroid.size / 2 });
         }
@@ -177,15 +173,15 @@ function handleCollisions() {
   });
 }
 
-// Update timer display
+// Update timer
 function updateTimer() {
   if (timeLeft > 0) {
-    timeLeft -= 1 / 60; // Reduce time by 1 frame
+    timeLeft -= 1 / 60;
     document.getElementById("timer").innerText = Math.floor(timeLeft);
   }
 }
 
-// Check level progress and update
+// Check level progression
 function checkLevelProgress() {
   if (timeLeft % 10 === 0 && timeLeft > 0) {
     level += 1;
@@ -197,7 +193,7 @@ function checkLevelProgress() {
 function updateLeaderboard() {
   leaderboard.push(score);
   leaderboard.sort((a, b) => b - a);
-  leaderboard = leaderboard.slice(0, 3); // Keep top 3 scores
+  leaderboard = leaderboard.slice(0, 3);
   localStorage.setItem("leaderboard", JSON.stringify(leaderboard));
 
   const leaderboardList = document.getElementById("leaderboardList");
@@ -206,7 +202,7 @@ function updateLeaderboard() {
     .join("");
 }
 
-// End the game
+// End game
 function endGame() {
   updateLeaderboard();
   alert(`Game Over! Your score: ${score}`);
